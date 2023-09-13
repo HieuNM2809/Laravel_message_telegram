@@ -47,9 +47,15 @@ class TelegramController extends Controller
             . "<b>Message: </b>\n"
             . " - " . $request->message;
 
-
         $curl = curl_init();
+
         $proxyUrl = 'http://proxy.hcm.fpt.vn:80';
+        $data =  [
+            'chat_id' => env('TELEGRAM_CHANNEL_ID', '-1001738435883'),
+            'parse_mode' => 'HTML',
+            'text' => $text
+        ];
+
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://api.telegram.org/bot6288276952:AAGIn1-nuvuyZ-L4gzt0bcx5_19cAO_o0vQ/sendMessage',
             CURLOPT_RETURNTRANSFER => true,
@@ -59,11 +65,7 @@ class TelegramController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => '{
-                "chat_id": "-1001738435883",
-                "parse_mode": "HTML",
-                "text": "'.$text.'"
-            }',
+            CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json'
             ),
@@ -72,7 +74,6 @@ class TelegramController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         dd(json_decode($response, true));
-
 
 
 //        Telegram::sendMessage([
